@@ -36,3 +36,9 @@ která zobrazuje pohyb planet v čase a zobrazuje jejich trajektorie.
     bude náhodně generovat počáteční podmínky planet (polohy, rychlosti
     a hmotnosti)
 -   vyzkušet různé délky časového kroku (u planet např. hodina, den, týden, ...) a pozorovat kdy dojde k degradaci simulace 
+
+
+###Funkce v main()
+
+
+
