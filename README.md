@@ -40,5 +40,19 @@ která zobrazuje pohyb planet v čase a zobrazuje jejich trajektorie.
 
 ### Funkce v main()
 
+-    load_initial_conditions(filename): Načítá počáteční podmínky pro simulaci z JSON souboru. Očekává název souboru jako vstupní argument a vrací seznam objektů třídy Planet.
+
+-    generate_random_conditions(num_planets, min_mass, max_mass, min_distance, max_distance, max_velocity): Generuje náhodné počáteční podmínky pro simulaci. Očekává počet planet, minimální a maximální hmotnost, minimální a maximální vzdálenost a maximální rychlost jako vstupní argumenty. Vrací seznam objektů třídy Planet.
+
+-    Simulation(planets): Třída reprezentující simulaci. Očekává seznam objektů třídy Planet jako vstupní argument.
+
+-    simulation.simulate(num_steps, dt): Metoda třídy Simulation, která provádí simulaci pohybu planet. Očekává počet kroků simulace a časový krok jako vstupní argumenty.
+
+-    simulation.plot_positions(): Metoda třídy Simulation, která vykresluje pozice planet na grafu.
+
+-    simulation.create_animation(): Metoda třídy Simulation, která vytváří animaci pohybu planet.
+
+-    simulation.save_animation(filename): Metoda třídy Simulation, která ukládá animaci pohybu planet do souboru. Očekává název výstupního souboru jako vstupní argument.
+
 
 
