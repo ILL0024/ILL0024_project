@@ -38,7 +38,7 @@ která zobrazuje pohyb planet v čase a zobrazuje jejich trajektorie.
 -   vyzkušet různé délky časového kroku (u planet např. hodina, den, týden, ...) a pozorovat kdy dojde k degradaci simulace 
 
 
-###Funkce v main()
+### Funkce v main()
 
 
 
