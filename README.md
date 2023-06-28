@@ -55,4 +55,8 @@ která zobrazuje pohyb planet v čase a zobrazuje jejich trajektorie.
 -    simulation.save_animation(filename): Metoda třídy Simulation, která ukládá animaci pohybu planet do souboru. Očekává název výstupního souboru jako vstupní argument.
 
 
+Ve funkci main() je použita metoda load_initial_conditions() k načtení počátečních podmínek ze souboru "initial_conditions.json". Poté je vytvořena instance třídy Simulation s načtenými počátečními podmínkami. Následně je volána metoda simulate() pro simulaci pohybu planet, plot_positions() pro vykreslení pozic planet na grafu, create_animation() pro vytvoření animace pohybu planet a save_animation() pro uložení animace do souboru "animation.mp4".
 
+#### Názvy proměnných jsou:
+    planets: seznam objektů třídy Planet reprezentujících planety ve simulaci
+    simulation: instance třídy Simulation pro provádění simulace
