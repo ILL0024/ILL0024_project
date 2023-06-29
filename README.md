@@ -38,6 +38,12 @@ která zobrazuje pohyb planet v čase a zobrazuje jejich trajektorie.
 -   vyzkušet různé délky časového kroku (u planet např. hodina, den, týden, ...) a pozorovat kdy dojde k degradaci simulace 
 
 
+
+
+
+
+
+----------------------------------------
 ### Funkce v main()
 
 -    load_initial_conditions(filename): Načítá počáteční podmínky pro simulaci z JSON souboru. Očekává název souboru jako vstupní argument a vrací seznam objektů třídy Planet.
