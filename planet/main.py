@@ -1,3 +1,4 @@
+"""
 import math
 import json
 import itertools
@@ -143,3 +144,103 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+"""
+
+import json
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class Planet:
+    def __init__(self, name, position, velocity, mass):
+        self.name = name
+        self.position = np.array(position)
+        self.velocity = np.array(velocity)
+        self.mass = mass
+
+
+class PlanetaryMotionSimulator:
+    def __init__(self, planets, G=6.67430e-11, time_step=3600):
+        self.planets = planets
+        self.G = G
+        self.time_step = time_step
+        self.positions = {planet.name: [] for planet in self.planets}
+
+    def calculate_acceleration(self, planet):
+        acceleration = np.zeros(2)
+        for other_planet in self.planets:
+            if planet != other_planet:
+                position_diff = other_planet.position - planet.position
+                distance = np.linalg.norm(position_diff)
+                force = self.G * planet.mass * other_planet.mass / distance**2
+                acceleration += force * position_diff / distance
+        return acceleration
+
+    def simulate_motion(self, num_steps):
+        for _ in range(num_steps):
+            for planet in self.planets:
+                acceleration = self.calculate_acceleration(planet)
+                planet.velocity += acceleration * self.time_step
+                planet.position += planet.velocity * self.time_step
+                self.positions[planet.name].append(planet.position.copy())
+
+    def save_positions_to_json(self, file_path):
+        data = {}
+        for planet in self.planets:
+            data[planet.name] = [pos.tolist() for pos in self.positions[planet.name]]
+
+        with open(file_path, 'w') as json_file:
+            json.dump(data, json_file)
+
+    def plot_motion(self):
+        for planet in self.planets:
+            planet_positions = self.positions[planet.name]
+            x = [pos[0] for pos in planet_positions]
+            y = [pos[1] for pos in planet_positions]
+            plt.plot(x, y, label=planet.name)
+
+        plt.xlabel('X position')
+        plt.ylabel('Y position')
+        plt.title('Planetary Motion')
+        plt.legend()
+        plt.savefig('planetary_motion.png')  # Save the plot as an image
+        plt.show()
+
+    def generate_random_scenario(cls, num_planets):
+        planets = []
+        for i in range(num_planets):
+            name = "Planet " + str(i + 1)
+            position = np.random.uniform(-1e12, 1e12, size=(2,))
+            velocity = np.random.uniform(-1000, 1000, size=(2,))
+            mass = np.random.uniform(1e20, 1e30)
+            planet = Planet(name, position, velocity, mass)
+            planets.append(planet)
+        return cls(planets)
+
+
+def load_initial_conditions_from_json(file_path):
+    with open(file_path) as json_file:
+        data = json.load(json_file)
+
+    planets = []
+    for name, planet_data in data.items():
+        position = planet_data['position']
+        velocity = planet_data['velocity']
+        mass = planet_data['mass']
+        planet = Planet(name, position, velocity, mass)
+        planets.append(planet)
+
+    return PlanetaryMotionSimulator(planets)
+
+
+file_path = 'planets.json'
+simulator = load_initial_conditions_from_json(file_path)
+
+num_steps = 50  # Number of simulation steps
+
+simulator.simulate_motion(num_steps)
+simulator.save_positions_to_json('positions.json')
+simulator.plot_motion()
+
