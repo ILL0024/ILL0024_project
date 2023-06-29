@@ -151,10 +151,21 @@ if __name__ == '__main__':
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import List
 
 
 class Planet:
-    def __init__(self, name, position, velocity, mass):
+    """
+    V simulaci představuje planetu.
+
+     Atributy:
+        name (str): Název planety
+        position (numpy.ndarray): Pozice planety ve 2D prostoru.
+        velocity (numpy.ndarray):  Rychlost planety ve 2D prostoru.
+        mass (float): Hmotnost planety.
+    """
+
+    def __init__(self, name: str, position: np.ndarray, velocity: np.ndarray, mass: float):
         self.name = name
         self.position = np.array(position)
         self.velocity = np.array(velocity)
@@ -162,23 +173,48 @@ class Planet:
 
 
 class PlanetaryMotionSimulator:
-    def __init__(self, planets, G=6.67430e-11, time_step=3600):
+    """
+    Simuluje pohyb více planet ve vesmíru na základě gravitačních sil.
+
+    Atributy:
+        planets (List[Planet]): Seznam objektů Planet představujících planety v simulaci.
+        G (float): Gravitační konstanta.
+        time_step (float): Časový krok použitý pro simulaci.
+        positions (dict): Slovník pro ukládání pozic planet během simulace.
+    """
+
+    def __init__(self, planets: List[Planet], G: float = 6.67430e-11, time_step: float = 3600):
         self.planets = planets
         self.G = G
         self.time_step = time_step
         self.positions = {planet.name: [] for planet in self.planets}
 
-    def calculate_acceleration(self, planet):
+    def calculate_acceleration(self, planet: Planet) -> np.ndarray:
+        """
+         Vypočítá zrychlení planety na základě gravitačních sil.
+
+         Args:
+             planet (Planet): Planeta, pro kterou se má vypočítat zrychlení.
+
+         Vrácení:
+             np.ndarray: Vektor zrychlení.
+         """
         acceleration = np.zeros(2)
         for other_planet in self.planets:
             if planet != other_planet:
                 position_diff = other_planet.position - planet.position
                 distance = np.linalg.norm(position_diff)
-                force = self.G * planet.mass * other_planet.mass / distance**2
+                force = self.G * planet.mass * other_planet.mass / distance ** 2
                 acceleration += force * position_diff / distance
         return acceleration
 
-    def simulate_motion(self, num_steps):
+    def simulate_motion(self, num_steps: int):
+        """
+         Simuluje pohyb planet po zadaný počet kroků.
+
+         Args:
+             num_steps (int): Počet kroků simulace.
+         """
         for _ in range(num_steps):
             for planet in self.planets:
                 acceleration = self.calculate_acceleration(planet)
@@ -186,7 +222,13 @@ class PlanetaryMotionSimulator:
                 planet.position += planet.velocity * self.time_step
                 self.positions[planet.name].append(planet.position.copy())
 
-    def save_positions_to_json(self, file_path):
+    def save_positions_to_json(self, file_path: str):
+        """
+         Uloží polohy planet během simulace do souboru JSON.
+
+         Args:
+             file_path (str): Cesta k souboru pro uložení pozic.
+         """
         data = {}
         for planet in self.planets:
             data[planet.name] = [pos.tolist() for pos in self.positions[planet.name]]
@@ -195,6 +237,9 @@ class PlanetaryMotionSimulator:
             json.dump(data, json_file)
 
     def plot_motion(self):
+        """
+        Vykresluje pohyb planet pomocí matplotlib.
+        """
         for planet in self.planets:
             planet_positions = self.positions[planet.name]
             x = [pos[0] for pos in planet_positions]
@@ -208,7 +253,17 @@ class PlanetaryMotionSimulator:
         plt.savefig('planetary_motion.png')  # Save the plot as an image
         plt.show()
 
-    def generate_random_scenario(cls, num_planets):
+    @classmethod
+    def generate_random_scenario(cls, num_planets: int):
+        """
+         Vygeneruje náhodný scénář se zadaným počtem planet.
+
+         Args:
+             num_planets (int): Počet planet, které se mají vygenerovat.
+
+         Vrácení:
+             PlanetaryMotionSimulator: Instance PlanetaryMotionSimulator s náhodně generovanými planetami.
+         """
         planets = []
         for i in range(num_planets):
             name = "Planet " + str(i + 1)
@@ -220,7 +275,16 @@ class PlanetaryMotionSimulator:
         return cls(planets)
 
 
-def load_initial_conditions_from_json(file_path):
+def load_initial_conditions_from_json(file_path: str) -> PlanetaryMotionSimulator:
+    """
+     Načte počáteční podmínky planet ze souboru JSON.
+
+     Args:
+         file_path (str): Cesta k souboru JSON.
+
+     Vrácení:
+         PlanetaryMotionSimulator: Instance PlanetaryMotionSimulator s načtenými počátečními podmínkami.
+     """
     with open(file_path) as json_file:
         data = json.load(json_file)
 
@@ -243,4 +307,3 @@ num_steps = 50  # Number of simulation steps
 simulator.simulate_motion(num_steps)
 simulator.save_positions_to_json('positions.json')
 simulator.plot_motion()
-
